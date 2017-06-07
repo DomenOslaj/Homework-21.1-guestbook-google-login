@@ -84,12 +84,20 @@ class GuestbookHandler(BaseHandler):
 
 class EditMessageHandler(BaseHandler):
     def get(self, message_id):
+
+        if not users.is_current_user_admin():
+            return self.write("You are not admin!")
+
         message = Message.get_by_id(int(message_id))
         params = {"message": message}
 
         return self.render_template("edit_message.html", params=params)
 
     def post(self, message_id):
+
+        if not users.is_current_user_admin():
+            return self.write("You are not admin!")
+
         message = Message.get_by_id(int(message_id))
         message_new = self.request.get("message")
         message.message = message_new
