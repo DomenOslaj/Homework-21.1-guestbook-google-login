@@ -7,7 +7,13 @@
 </head>
 <body>
 
-
+    <a href="/">Main page</a> | <a href="/guestbook">Guestbook</a> | <a href="/deleted">Deleted messages</a>
+    {% if user %}
+    | <strong>{{ user.email() }}</strong>
+    | <a href="{{ logout_url }}">Logout</a>
+    {% else %}
+    | <a href="{{ login_url }}">Login</a>
+    {% endif %}
     {% block content %}{% endblock content %}
 
 

@@ -34,14 +34,14 @@ class BaseHandler(webapp2.RequestHandler):
         if user:
             logged_in = True
             logout_url = users.create_logout_url('/')
-            params{"logout_url"} = logout_url
+            params["logout_url"] = logout_url
 
         else:
             logged_in = False
             login_url = users.create_login_url('/')
-            params{"login_url"} = login_url
+            params["login_url"] = login_url
 
-        params{"logged_in"} = logged_in
+        params["logged_in"] = logged_in
 
         template = jinja_env.get_template(view_filename)
         return self.response.out.write(template.render(params))
