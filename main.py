@@ -127,10 +127,46 @@ class DeleteMessageHandler(BaseHandler):
 
         return self.redirect_to("guestbook-site")
 
+class ShowDeletedMessagesHandler(BaseHandler):
+    def get(self):
+
+        if not users.is_current_user_admin():
+            return self.write("You are not admin!")
+
+        messages = Message.query(Message.deleted == True).fetch()
+
+        params = {"messages": messages}
+
+        return self.render_template("deleted_messages.html", params=params)
+
+class CompleteMessageDeleteHandler(BaseHandler):
+    def get(self, message_id):
+        if not users.is_current_user_admin():
+            return self.write("You are not admin!")
+
+        message = Message.get_by_id(int(message_id))
+        params = {"message": message}
+
+        return self.render_template("complete_message_delete.html", params=params)
+
+
+    def post(self, message_id):
+        if not users.is_current_user_admin():
+            return self.write("You are not admin!")
+
+        message = Message.get_by_id(int(message_id))
+
+        message.key.delete()  #complete delete message
+
+        return self.redirect_to("deleted-messages")
+
+
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
     webapp2.Route("/guestbook", GuestbookHandler, name="guestbook-site"),
     webapp2.Route("/message/<message_id:\d+>/edit", EditMessageHandler),
     webapp2.Route("/message/<message_id:\d+>/delete", DeleteMessageHandler),
+    webapp2.Route("/deleted_messages", ShowDeletedMessagesHandler, name="deleted-messages"),
+    webapp2.Route("/message/<message_id:\d+>/complete-delete", CompleteMessageDeleteHandler),
 ], debug=True)

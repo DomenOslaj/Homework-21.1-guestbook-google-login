@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}GuestBook | Deleted messages{% endblock title%}
+
+{% block content %}
+
+<h3>Messages:</h3>
+
+<form action="/deleted_messages">
+{% for message in messages %}
+
+    <p> <b>{{ message.name }}</b> ( {{ message.email }} ),  {{ message.created.strftime ("%d.%m.%Y, %H:%M") }} ( <a href="/message/{{ message.key.id() }}/edit">EDIT</a>, <a href="/message/{{ message.key.id() }}/complete-delete">COMPLETE DELETE</a> ) </p>
+
+    <em>{{ message.message }}</em>
+</form>
+{% endfor %}
+{% endblock content %}
