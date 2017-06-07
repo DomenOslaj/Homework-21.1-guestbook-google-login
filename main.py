@@ -3,6 +3,7 @@ import os
 import jinja2
 import webapp2
 from models import Message
+from google.appengine.api import users
 
 
 
@@ -25,13 +26,31 @@ class BaseHandler(webapp2.RequestHandler):
     def render_template(self, view_filename, params=None):
         if not params:
             params = {}
+
+        # if we put google login here -> automatically in every handler
+        user = users.get_current_user()
+        params["user"] = user
+
+        if user:
+            logged_in = True
+            logout_url = users.create_logout_url('/')
+            params{"logout_url"} = logout_url
+
+        else:
+            logged_in = False
+            login_url = users.create_login_url('/')
+            params{"login_url"} = login_url
+
+        params{"logged_in"} = logged_in
+
         template = jinja_env.get_template(view_filename)
         return self.response.out.write(template.render(params))
 
 
 class MainHandler(BaseHandler):
     def get(self):
-        return self.render_template("main.html")
+
+        return self.render_template("main.html",)
 
 class GuestbookHandler(BaseHandler):
     def get(self):
@@ -43,12 +62,17 @@ class GuestbookHandler(BaseHandler):
 
 
     def post(self):
+        user = users.get_current_user()
+
+        if not user:
+            return self.write("You are not logged in!")
+
         author = self.request.get("name")
-        email = self.request.get("email")
+        email = user.email()
         message = self.request.get("message")
 
         if not author:
-            author = "Neznan"
+            author = "Anonymous"
 
         if "<script>" in message:
             return self.write("Can`t hack me ! :)")      #one way to gight JS injection

@@ -11,6 +11,7 @@
 
     </center>
 
+    {% if user %}
     <form method="post" class="red">
 
         <p><b>Here you can leave a message for the Guestbook!</b></p>
@@ -26,7 +27,9 @@
         <button type="submit">Submit</button>
 
     </form>
-
+    {% else %}
+    <p>Please login if you'd like to post a message.</p>
+    {% endif %}
 
     <hr>
 
