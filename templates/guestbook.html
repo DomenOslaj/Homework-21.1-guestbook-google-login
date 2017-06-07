@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}GuestBook | Filtron{% endblock title%}
+
+{% block content %}
+
+    <center>
+        <p>Back to main page?</p>
+
+            <a href="/">Main page</a>
+
+    </center>
+
+    <form method="post" class="red">
+
+        <p><b>Here you can leave a message for the Guestbook!</b></p>
+
+        <b>Name:</b><input type="text" name="name">
+
+        <b>Your email:</b><input type="email" name="email" required><br>
+
+        <b>Message:</b><br>
+
+        <textarea name="message" placeholder="Leave your message here." rows="8" cols="80%" required></textarea><br><br>
+
+        <button type="submit">Submit</button>
+
+    </form>
+
+
+    <hr>
+
+    <h3>Messages:</h3>
+    {% for message in messages %}
+        <p> <b>{{ message.name }}</b> ( {{ message.email }} ),  {{ message.created.strftime ("%d.%m.%Y, %H:%M") }} ( <a href="/message/{{ message.key.id() }}/edit">EDIT</a>, <a href="/message/{{ message.key.id() }}/delete">DELETE</a> ) </p>
+
+    <em>{{ message.message }}</em>
+
+    {% else %}
+        <p>No messages yet.</p>
+
+    {% endfor %}
+
+{% endblock content %}
+
