@@ -99,12 +99,20 @@ class EditMessageHandler(BaseHandler):
 
 class DeleteMessageHandler(BaseHandler):
     def get(self, message_id):
+
+        if not users.is_current_user_admin():
+            return self.write("You are not admin!")
+
         message = Message.get_by_id(int(message_id))
         params = {"message": message}
 
         return self.render_template("delete_message.html", params=params)
 
     def post(self, message_id):
+
+        if not users.is_current_user_admin():
+            return self.write("You are not admin!")
+
         message = Message.get_by_id(int(message_id))
         message.deleted = True
         message.put()
